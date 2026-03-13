@@ -1,12 +1,13 @@
 -- OpenClaw Relay 数据库初始化脚本
 
 -- 1. 创建管理员账号
--- 密码：admin123（bcrypt hash）
+-- 邮箱：admin@openclaw-relay.com
+-- 密码：admin123
 INSERT INTO "User" (id, email, password, name, role, balance, "createdAt", "updatedAt")
 VALUES (
   'admin-' || gen_random_uuid()::text,
   'admin@openclaw-relay.com',
-  '$2a$10$rOZJKH.qH8qH8qH8qH8qH8qH8qH8qH8qH8qH8qH8qH8qH8qH8qH8q',  -- 需要替换为实际的 bcrypt hash
+  '$2b$10$kksc7GfFTdtxeyMeuh24xuedElLE3lpC1lISrgakAhGPeXwHAt6XK',
   'Admin',
   'admin',
   1000.00,
