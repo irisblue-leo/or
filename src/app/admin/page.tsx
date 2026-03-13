@@ -188,8 +188,6 @@ export default function AdminPage() {
           </div>
           <div className="flex items-center gap-4 text-sm">
             <a href="/" className="text-gray-600 hover:text-gray-900 transition-colors"><HomeIcon size={18} /></a>
-            <a href="/dashboard" className="text-gray-600 hover:text-gray-900 transition-colors"><SettingsIcon size={18} /></a>
-            <a href="/admin/redeem-codes" className="text-gray-600 hover:text-gray-900 transition-colors" title="Redeem Codes"><TicketIcon size={18} /></a>
             <button onClick={logout} className="text-gray-600 hover:text-gray-900 transition-colors"><LogOutIcon size={18} /></button>
           </div>
         </div>
