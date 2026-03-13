@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import {
   OpenClawLogo, KeyIcon, ChartIcon, DollarIcon, PlusIcon,
-  TrashIcon, CopyIcon, LogOutIcon, HomeIcon, TicketIcon, CryptoIcon,
+  TrashIcon, CopyIcon, LogOutIcon, TicketIcon, CryptoIcon,
 } from "@/components/icons";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -111,12 +111,11 @@ export default function DashboardPage() {
       {/* Nav */}
       <nav className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--bg-nav)] backdrop-blur-xl">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <OpenClawLogo size={28} />
             <span className="text-lg font-semibold tracking-tight">Dashboard</span>
-          </div>
+          </a>
           <div className="flex items-center gap-4 text-sm">
-            <a href="/" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"><HomeIcon size={18} /></a>
             <a href="/dashboard/crypto" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title={t('crypto.title')}><CryptoIcon size={18} /></a>
             <a href="/dashboard/redeem" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title={t('dashboard.redeemCode')}><TicketIcon size={18} /></a>
             <span className="text-[var(--text-secondary)]">{user?.email}</span>
