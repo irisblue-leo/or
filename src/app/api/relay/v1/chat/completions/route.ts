@@ -150,24 +150,13 @@ export async function POST(req: NextRequest) {
   // 4. Check balance (estimate: pre-check with minimum)
   if (user.balance <= 0) return err("Insufficient balance", 402);
 
-  // 5. Get upstream config — prefer UpstreamProvider table, fallback to env
-  let upstreamUrl: string;
-  let upstreamKey: string;
-  let isOpenRouter = false;
+  // 5. Get upstream config — use env variables only
+  // Always use UPSTREAM_API_URL for most models, OPENROUTER_API_URL for OpenRouter
+  const upstreamProvider = model.upstreamProvider || model.provider;
+  const upstreamUrl = PROVIDER_URLS[upstreamProvider] || "";
+  const upstreamKey = PROVIDER_KEYS[upstreamProvider] || "";
+  const isOpenRouter = upstreamProvider === "openrouter";
 
-  if (model.upstreamProviderRef && model.upstreamProviderRef.active) {
-    // Use database-configured provider
-    const p = model.upstreamProviderRef;
-    upstreamUrl = `${p.apiUrl}/chat/completions`;
-    upstreamKey = p.apiKey;
-    isOpenRouter = p.slug === "openrouter";
-  } else {
-    // Fallback to env-based config
-    const upstreamProvider = model.upstreamProvider || model.provider;
-    upstreamUrl = PROVIDER_URLS[upstreamProvider] || "";
-    upstreamKey = PROVIDER_KEYS[upstreamProvider] || "";
-    isOpenRouter = upstreamProvider === "openrouter";
-  }
   if (!upstreamUrl || !upstreamKey) return err("Upstream provider not configured", 500);
 
   // 6. Build upstream request — always request usage in stream
