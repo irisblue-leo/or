@@ -72,7 +72,7 @@ fi
 
 echo -e "${YELLOW}6. 安装项目依赖...${NC}"
 cd $PROJECT_DIR
-pnpm install --prod
+pnpm install
 
 echo -e "${YELLOW}7. 生成 Prisma Client...${NC}"
 npx prisma generate
@@ -83,7 +83,11 @@ npx prisma db push
 echo -e "${YELLOW}9. 构建项目...${NC}"
 pnpm build
 
-echo -e "${YELLOW}10. 启动应用...${NC}"
+echo -e "${YELLOW}10. 清理开发依赖（可选）...${NC}"
+# 构建完成后可以删除 devDependencies 以节省空间
+# pnpm prune --prod
+
+echo -e "${YELLOW}11. 启动应用...${NC}"
 pm2 delete openclaw-relay 2>/dev/null || true
 pm2 start ecosystem.config.js
 pm2 save
