@@ -203,3 +203,14 @@ model RouterStats {
   @@index([date])
   @@index([ruleId])
 }
+
+model VerificationCode {
+  id        String   @id @default(uuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([code])
+}
