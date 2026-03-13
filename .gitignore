@@ -27,9 +27,9 @@ pnpm-lock.yaml
 package-lock.json
 yarn.lock
 
-# 敏感文件
-*.key
-*.pem
+# 敏感文件（排除 nginx 目录下的证书）
+# *.key
+# *.pem
 *.crt
 *.p12
 *.pfx
