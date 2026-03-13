@@ -26,14 +26,27 @@ command -v node >/dev/null 2>&1 || { echo -e "${RED}Node.js 未安装${NC}"; exi
 command -v pnpm >/dev/null 2>&1 || { echo -e "${RED}pnpm 未安装，正在安装...${NC}"; npm install -g pnpm; }
 command -v pm2 >/dev/null 2>&1 || { echo -e "${RED}PM2 未安装，正在安装...${NC}"; npm install -g pm2; }
 command -v nginx >/dev/null 2>&1 || { echo -e "${RED}Nginx 未安装${NC}"; exit 1; }
+command -v psql >/dev/null 2>&1 || { echo -e "${RED}PostgreSQL 未安装，正在安装...${NC}"; apt update && apt install -y postgresql postgresql-contrib; }
 
 echo -e "${GREEN}✓ 依赖检查完成${NC}"
 
-echo -e "${YELLOW}2. 创建必要的目录...${NC}"
+echo -e "${YELLOW}2. 配置 PostgreSQL...${NC}"
+if [ -f "$PROJECT_DIR/setup-postgres.sh" ]; then
+    bash $PROJECT_DIR/setup-postgres.sh
+else
+    echo -e "${YELLOW}手动配置 PostgreSQL...${NC}"
+    systemctl start postgresql
+    systemctl enable postgresql
+    sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '!AgentOPC2026';" 2>/dev/null || true
+    sudo -u postgres psql -c "CREATE DATABASE openclaw_relay;" 2>/dev/null || echo "数据库已存在"
+fi
+echo -e "${GREEN}✓ PostgreSQL 配置完成${NC}"
+
+echo -e "${YELLOW}3. 创建必要的目录...${NC}"
 mkdir -p $PROJECT_DIR/logs
 mkdir -p $SSL_DIR
 
-echo -e "${YELLOW}3. 复制 SSL 证书...${NC}"
+echo -e "${YELLOW}4. 复制 SSL 证书...${NC}"
 if [ -f "$PROJECT_DIR/nginx/relay.agentopc.xyz.pem" ]; then
     cp $PROJECT_DIR/nginx/relay.agentopc.xyz.pem $SSL_DIR/
     cp $PROJECT_DIR/nginx/relay.agentopc.xyz.key $SSL_DIR/
@@ -45,7 +58,7 @@ else
     exit 1
 fi
 
-echo -e "${YELLOW}4. 配置 Nginx...${NC}"
+echo -e "${YELLOW}5. 配置 Nginx...${NC}"
 cp $PROJECT_DIR/nginx/relay.agentopc.xyz.conf $NGINX_CONF_DIR/
 ln -sf $NGINX_CONF_DIR/relay.agentopc.xyz.conf $NGINX_ENABLED_DIR/relay.agentopc.xyz.conf
 nginx -t
@@ -57,18 +70,18 @@ else
     exit 1
 fi
 
-echo -e "${YELLOW}5. 安装项目依赖...${NC}"
+echo -e "${YELLOW}6. 安装项目依赖...${NC}"
 cd $PROJECT_DIR
 pnpm install --prod
 
-echo -e "${YELLOW}6. 构建项目...${NC}"
+echo -e "${YELLOW}7. 构建项目...${NC}"
 pnpm build
 
-echo -e "${YELLOW}7. 配置数据库...${NC}"
+echo -e "${YELLOW}8. 配置数据库...${NC}"
 npx prisma generate
 npx prisma db push
 
-echo -e "${YELLOW}8. 启动应用...${NC}"
+echo -e "${YELLOW}9. 启动应用...${NC}"
 pm2 delete openclaw-relay 2>/dev/null || true
 pm2 start ecosystem.config.js
 pm2 save
