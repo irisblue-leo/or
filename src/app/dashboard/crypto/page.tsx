@@ -20,7 +20,6 @@ export default function CryptoDepositPage() {
   const [selectedChain, setSelectedChain] = useState<Chain | null>(null)
   const [walletAddress, setWalletAddress] = useState<WalletAddress | null>(null)
   const [loading, setLoading] = useState(false)
-  const [testAmount, setTestAmount] = useState('100')
 
   const chains = [
     { id: 'ethereum' as Chain, name: 'Ethereum', tokens: 'ETH, USDT' },
@@ -62,37 +61,8 @@ export default function CryptoDepositPage() {
     }
   }
 
-  async function simulateDeposit() {
-    if (!testAmount || parseFloat(testAmount) <= 0) {
-      alert(t('crypto.error.invalidAmount'))
-      return
-    }
-
-    try {
-      const res = await fetch('/api/crypto/deposit/simulate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          chain: selectedChain || 'ethereum',
-          token: 'USDT',
-          amount: parseFloat(testAmount)
-        })
-      })
-
-      if (!res.ok) {
-        throw new Error('Failed to simulate deposit')
-      }
-
-      const data = await res.json()
-      alert(`${t('crypto.depositSuccess')}\n${t('crypto.amount')}: ${testAmount} USDT\n${t('crypto.txHash')}: ${data.deposit.txHash.substring(0, 10)}...`)
-      router.push('/dashboard')
-    } catch (error) {
-      console.error('Failed to simulate deposit:', error)
-      alert(t('crypto.error.depositFailed'))
-    }
+  function viewDepositHistory() {
+    router.push('/dashboard/crypto/history')
   }
 
   return (
@@ -214,30 +184,51 @@ export default function CryptoDepositPage() {
           </div>
         )}
 
-        {/* 测试充值 */}
+        {/* 充值说明 */}
         <div className="bg-white rounded-xl shadow-sm border border-[var(--border)] p-6">
-          <h2 className="text-lg font-semibold mb-4">{t('crypto.testDeposit')}</h2>
+          <h2 className="text-lg font-semibold mb-4">{t('crypto.howToDeposit')}</h2>
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
-                {t('crypto.amount')} (USDT)
-              </label>
-              <input
-                type="number"
-                value={testAmount}
-                onChange={(e) => setTestAmount(e.target.value)}
-                className="w-full px-3 py-2 border border-[var(--border)] rounded-lg"
-              />
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex gap-3">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-blue-800 mb-2">{t('crypto.depositSteps.title')}</h3>
+                  <ol className="text-sm text-blue-700 space-y-2 list-decimal list-inside">
+                    <li>{t('crypto.depositSteps.step1')}</li>
+                    <li>{t('crypto.depositSteps.step2')}</li>
+                    <li>{t('crypto.depositSteps.step3')}</li>
+                    <li>{t('crypto.depositSteps.step4')}</li>
+                  </ol>
+                </div>
+              </div>
             </div>
+
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex gap-3">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-sm font-medium text-green-800 mb-2">真实区块链充值</h3>
+                  <p className="text-sm text-green-700">
+                    这是真实的区块链充值系统。您的充值将在区块链确认后自动到账。系统会自动监控您的充值地址，无需手动操作。
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <button
-              onClick={simulateDeposit}
-              className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+              onClick={viewDepositHistory}
+              className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
             >
-              {t('crypto.simulateButton')}
+              {t('crypto.viewHistory')}
             </button>
-            <p className="text-xs text-[var(--text-muted)] text-center">
-              {t('crypto.testNote')}
-            </p>
           </div>
         </div>
       </div>
