@@ -52,7 +52,7 @@ export default function PricingPage() {
       const res = await fetch("/api/admin/models", { headers: authHeaders() });
       if (!res.ok) throw new Error("Failed to fetch models");
       const data = await res.json();
-      setModels(data);
+      setModels(data.models || data);
     } catch (error) {
       console.error("Failed to fetch models:", error);
     }
