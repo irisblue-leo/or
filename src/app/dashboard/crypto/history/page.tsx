@@ -103,7 +103,7 @@ export default function CryptoHistoryPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <OpenClawLogo size={28} />
-            <span className="text-lg font-semibold tracking-tight">{t('crypto.viewHistory')}</span>
+            <span className="text-lg font-semibold tracking-tight">Deposit History</span>
           </a>
           <div className="flex items-center gap-4 text-sm">
             <a href="/dashboard" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
