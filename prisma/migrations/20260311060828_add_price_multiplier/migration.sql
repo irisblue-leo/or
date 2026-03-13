@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Model" ADD COLUMN     "priceMultiplier" DOUBLE PRECISION NOT NULL DEFAULT 1.25;

@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-input: #f1f5f9;
+  --bg-nav: rgba(255, 255, 255, 0.85);
+  --border: #e2e8f0;
+  --border-light: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-accent: #4f46e5;
+}
+
+* {
+  font-family: "Anthropic Serif Display", Georgia, "Times New Roman", Times, serif;
+}

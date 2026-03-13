@@ -1,0 +1,205 @@
+// Prisma schema for OpenClaw Relay
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  password          String
+  name              String?
+  role              String   @default("user") // user | admin
+  balance           Float    @default(0)
+  emailVerified     Boolean  @default(false)
+  verificationToken String?
+  tokenExpiresAt    DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  apiKeys           ApiKey[]
+  usageLogs         UsageLog[]
+  transactions      Transaction[]
+  createdRedeemCodes RedeemCode[] @relation("CreatedRedeemCodes")
+  usedRedeemCodes    RedeemCode[] @relation("UsedRedeemCodes")
+  cryptoWallets     CryptoWallet[]
+  cryptoDeposits    CryptoDeposit[]
+}
+
+model ApiKey {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  name      String   @default("Default")
+  userId    String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  user      User       @relation(fields: [userId], references: [id])
+  usageLogs UsageLog[]
+
+  @@index([userId])
+  @@index([active])
+}
+
+model UpstreamProvider {
+  id              String  @id @default(uuid())
+  name            String  @unique  // display name: "主线路", "OpenRouter", "302.ai"
+  slug            String  @unique  // identifier: "main", "openrouter", "302ai"
+  apiUrl          String  // e.g. "https://hone.vvvv.ee/v1"
+  apiKey          String  // encrypted API key
+  priceMultiplier Float   @default(1.25) // default multiplier for all models on this provider
+  active          Boolean @default(true)
+  priority        Int     @default(0) // higher = preferred (for failover)
+  notes           String? // admin notes
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  models Model[]
+}
+
+model Model {
+  id               String  @id @default(uuid())
+  name             String  @unique  // e.g. "gpt-4o", "claude-3.5-sonnet"
+  provider         String  // openai, anthropic, etc. (model vendor)
+  upstreamProvider String  @default("openai") // legacy field
+  upstreamModelId  String? // upstream model identifier
+  providerId       String? // FK to UpstreamProvider
+  inputPrice       Float   // per 1M tokens, our price
+  outputPrice      Float   // per 1M tokens, our price
+  upstreamInput    Float   // upstream cost per 1M tokens
+  upstreamOutput   Float   // upstream cost per 1M tokens
+  priceMultiplier  Float   @default(1.25) // model-level multiplier (overrides provider if set)
+  active           Boolean @default(true)
+
+  upstreamProviderRef UpstreamProvider? @relation(fields: [providerId], references: [id])
+  usageLogs           UsageLog[]
+  routerConfigs       RouterConfig[]
+
+  @@index([providerId])
+}
+
+model UsageLog {
+  id           String   @id @default(uuid())
+  userId       String
+  apiKeyId     String
+  modelId      String
+  inputTokens  Int
+  outputTokens Int
+  cost         Float    // charged to user
+  upstreamCost Float    // our cost
+  duration     Int?     // ms
+  status       Int      @default(200)
+  createdAt    DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  apiKey ApiKey  @relation(fields: [apiKeyId], references: [id])
+  model  Model   @relation(fields: [modelId], references: [id])
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String   // topup | deduct | refund
+  amount    Float
+  note      String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model RedeemCode {
+  id          String    @id @default(uuid())
+  code        String    @unique
+  amount      Float     // credit amount
+  status      String    @default("unused") // unused | used | expired
+  createdById String
+  usedById    String?
+  usedAt      DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  createdBy User  @relation("CreatedRedeemCodes", fields: [createdById], references: [id])
+  usedBy    User? @relation("UsedRedeemCodes", fields: [usedById], references: [id])
+
+  @@index([status])
+  @@index([code])
+  @@index([createdById])
+  @@index([usedById])
+}
+
+model CryptoWallet {
+  id        String   @id @default(uuid())
+  userId    String
+  chain     String   // ethereum, bsc, tron, polygon
+  address   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chain])
+}
+
+model CryptoDeposit {
+  id            String    @id @default(uuid())
+  userId        String
+  chain         String    // ethereum, bsc, tron, polygon
+  token         String    // ETH, USDT, BNB, TRX, etc.
+  amount        Decimal   @db.Decimal(18, 8)
+  amountUsd     Decimal   @db.Decimal(18, 2)
+  txHash        String    @unique
+  fromAddress   String
+  toAddress     String
+  status        String    @default("pending") // pending, confirmed, failed
+  confirmations Int       @default(0)
+  createdAt     DateTime  @default(now())
+  confirmedAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+model SystemConfig {
+  id          String   @id
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?
+}
+
+model RouterConfig {
+  id            String   @id @default(uuid())
+  name          String
+  enabled       Boolean  @default(true)
+  priority      Int      @default(0)
+  conditions    Json
+  targetModelId String
+  description   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  targetModel Model @relation(fields: [targetModelId], references: [id], onDelete: Cascade)
+
+  @@index([enabled, priority(sort: Desc)])
+}
+
+model RouterStats {
+  id           String   @id @default(uuid())
+  ruleId       String?
+  modelId      String
+  hitCount     Int      @default(0)
+  totalCost    Float    @default(0)
+  avgLatency   Int?     // ms
+  date         DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@index([date])
+  @@index([ruleId])
+}

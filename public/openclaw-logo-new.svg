@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 320">
+  <!-- Lobster mascot -->
+  <g id="lobster">
+    <!-- Main body -->
+    <ellipse cx="120" cy="160" rx="45" ry="65" fill="#E63946" stroke="#000" stroke-width="3"/>
+    
+    <!-- Head -->
+    <circle cx="120" cy="105" r="32" fill="#E63946" stroke="#000" stroke-width="3"/>
+    
+    <!-- Eyes -->
+    <circle cx="110" cy="95" r="7" fill="#000"/>
+    <circle cx="130" cy="95" r="7" fill="#000"/>
+    <circle cx="112" cy="93" r="2.5" fill="#fff"/>
+    <circle cx="132" cy="93" r="2.5" fill="#fff"/>
+    
+    <!-- Smile -->
+    <path d="M 108 110 Q 120 118 132 110" stroke="#000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    
+    <!-- Antennae -->
+    <path d="M 102 75 Q 90 50 82 30" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <path d="M 138 75 Q 150 50 158 30" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <circle cx="82" cy="30" r="5" fill="#E63946" stroke="#000" stroke-width="2"/>
+    <circle cx="158" cy="30" r="5" fill="#E63946" stroke="#000" stroke-width="2"/>
+    
+    <!-- Left big claw -->
+    <g id="left-claw">
+      <ellipse cx="65" cy="135" rx="42" ry="24" fill="#E63946" stroke="#000" stroke-width="3" transform="rotate(-25 65 135)"/>
+      <path d="M 35 125 Q 25 118 20 110" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M 30 142 Q 20 148 15 155" stroke="#000" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="55" cy="132" rx="14" ry="7" fill="#fff" opacity="0.7" transform="rotate(-25 55 132)"/>
+    </g>
+    
+    <!-- Right small claw -->
+    <g id="right-claw">
+      <ellipse cx="175" cy="145" rx="28" ry="18" fill="#E63946" stroke="#000" stroke-width="3" transform="rotate(30 175 145)"/>
+      <path d="M 195 138 Q 203 133 208 128" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M 198 150 Q 206 154 212 158" stroke="#000" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="183" cy="143" rx="10" ry="6" fill="#fff" opacity="0.7" transform="rotate(30 183 143)"/>
+    </g>
+    
+    <!-- Tail segments -->
+    <ellipse cx="120" cy="225" rx="33" ry="19" fill="#E63946" stroke="#000" stroke-width="2.5"/>
+    <ellipse cx="116" cy="252" rx="28" ry="17" fill="#E63946" stroke="#000" stroke-width="2.5"/>
+    <ellipse cx="112" cy="275" rx="23" ry="14" fill="#E63946" stroke="#000" stroke-width="2.5"/>
+    
+    <!-- Legs -->
+    <path d="M 98 180 L 85 208" stroke="#E63946" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 108 188 L 98 216" stroke="#E63946" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 132 188 L 142 216" stroke="#E63946" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 142 180 L 155 208" stroke="#E63946" stroke-width="5" stroke-linecap="round"/>
+    
+    <!-- Body segments -->
+    <path d="M 95 140 Q 120 145 145 140" stroke="#000" stroke-width="2" fill="none" opacity="0.3"/>
+    <path d="M 95 165 Q 120 170 145 165" stroke="#000" stroke-width="2" fill="none" opacity="0.3"/>
+    <path d="M 95 190 Q 120 195 145 190" stroke="#000" stroke-width="2" fill="none" opacity="0.3"/>
+  </g>
+  
+  <!-- Text: OPENCLAW -->
+  <g id="text" font-family="'Arial Black', 'Arial Bold', sans-serif" font-weight="900">
+    <!-- OPEN (Black) -->
+    <text x="280" y="215" font-size="175" fill="#000" letter-spacing="-5">OPEN</text>
+    
+    <!-- CLAW (Red) -->
+    <text x="880" y="215" font-size="175" fill="#E63946" letter-spacing="-5">CLAW</text>
+  </g>
+</svg>
