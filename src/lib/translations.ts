@@ -631,7 +631,7 @@ export const translations = {
     'admin.copy': '複製',
     'admin.clear': '清除',
     'admin.create': '建立',
-    'admin.providers': '介面管理',
+    'admin.providers': '接口管理',
     'admin.usageSummary': '用量摘要',
     'admin.generateCodes': '生成充值碼',
     'admin.amount': '金額',
