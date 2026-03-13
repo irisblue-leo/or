@@ -1,7 +1,9 @@
 import { PrismaClient, Prisma } from '@prisma/client'
 import { ethers } from 'ethers'
-import TronWeb from 'tronweb'
 import { Connection, PublicKey } from '@solana/web3.js'
+
+// Use dynamic import for TronWeb to avoid TypeScript issues
+const TronWeb = require('tronweb')
 
 const prisma = new PrismaClient()
 
