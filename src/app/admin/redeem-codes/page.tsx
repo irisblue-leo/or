@@ -172,7 +172,7 @@ export default function AdminRedeemCodesPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="px-3 py-2 rounded-lg bg-gray-100 border border-gray-200 text-sm text-white focus:outline-none focus:border-indigo-500"
+              className="px-3 py-2 rounded-lg bg-gray-100 border border-gray-200 text-sm text-gray-900 focus:outline-none focus:border-indigo-500"
             >
               <option value="all">{t('admin.redeemCodes.allStatus')}</option>
               <option value="active">{t('admin.redeemCodes.active')}</option>
@@ -184,7 +184,7 @@ export default function AdminRedeemCodesPage() {
               value={searchEmail}
               onChange={(e) => setSearchEmail(e.target.value)}
               placeholder={t('admin.redeemCodes.searchEmail')}
-              className="px-3 py-2 rounded-lg bg-gray-100 border border-gray-200 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+              className="px-3 py-2 rounded-lg bg-gray-100 border border-gray-200 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-indigo-500"
             />
           </div>
           <div className="flex items-center gap-3">
@@ -215,7 +215,7 @@ export default function AdminRedeemCodesPage() {
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div>
@@ -224,7 +224,7 @@ export default function AdminRedeemCodesPage() {
                     type="number"
                     value={count}
                     onChange={(e) => setCount(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div>
@@ -233,7 +233,7 @@ export default function AdminRedeemCodesPage() {
                     type="number"
                     value={expiresIn}
                     onChange={(e) => setExpiresIn(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 rounded-lg bg-white border border-gray-200 text-gray-900 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div className="flex gap-3 pt-2">
@@ -271,7 +271,7 @@ export default function AdminRedeemCodesPage() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">{t('admin.redeemCodes.createdAt')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-800">
+              <tbody className="divide-y divide-gray-200">
                 {filtered.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-500">
@@ -281,8 +281,8 @@ export default function AdminRedeemCodesPage() {
                 ) : (
                   filtered.map((code) => (
                     <tr key={code.id} className="hover:bg-white/30 transition-colors">
-                      <td className="px-4 py-3 text-sm font-mono">{code.code}</td>
-                      <td className="px-4 py-3 text-sm">${code.amount.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-sm font-mono text-gray-900">{code.code}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">${code.amount.toFixed(2)}</td>
                       <td className="px-4 py-3">
                         <span
                           className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${

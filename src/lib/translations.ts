@@ -216,6 +216,15 @@ export const translations = {
     'redeem.history': '兑换记录',
     'redeem.amount': '金额',
     'redeem.time': '时间',
+    'redeem.currentBalance': '当前余额',
+    'redeem.enterCode': '输入充值码',
+    'redeem.verify': '验证',
+    'redeem.verifying': '验证中...',
+    'redeem.redeeming': '兑换中...',
+    'redeem.validCode': '有效充值码',
+    'redeem.invalidCode': '无效充值码',
+    'redeem.networkError': '网络错误',
+    'redeem.noHistory': '暂无兑换记录',
     
     // 管理后台
     'admin.title': '管理后台',
@@ -299,6 +308,7 @@ export const translations = {
     'admin.requests': '次请求',
     'admin.topupUser': '充值',
     'admin.resetBalance': '重置余额',
+    'admin.router': '路由配置',
 
     // 定价管理
     'pricing.title': '定价管理',
@@ -565,6 +575,15 @@ export const translations = {
     'redeem.history': '兌換記錄',
     'redeem.amount': '金額',
     'redeem.time': '時間',
+    'redeem.currentBalance': '當前餘額',
+    'redeem.enterCode': '輸入充值碼',
+    'redeem.verify': '驗證',
+    'redeem.verifying': '驗證中...',
+    'redeem.redeeming': '兌換中...',
+    'redeem.validCode': '有效充值碼',
+    'redeem.invalidCode': '無效充值碼',
+    'redeem.networkError': '網路錯誤',
+    'redeem.noHistory': '暫無兌換記錄',
     
     // 管理後台
     'admin.title': '管理後台',
@@ -648,6 +667,7 @@ export const translations = {
     'admin.requests': '次請求',
     'admin.topupUser': '充值',
     'admin.resetBalance': '重置餘額',
+    'admin.router': '路由配置',
 
     // 定價管理
     'pricing.title': '定價管理',
@@ -914,6 +934,15 @@ export const translations = {
     'redeem.history': 'Redeem History',
     'redeem.amount': 'Amount',
     'redeem.time': 'Time',
+    'redeem.currentBalance': 'Current Balance',
+    'redeem.enterCode': 'Enter your redeem code',
+    'redeem.verify': 'Verify',
+    'redeem.verifying': 'Verifying...',
+    'redeem.redeeming': 'Redeeming...',
+    'redeem.validCode': 'Valid code',
+    'redeem.invalidCode': 'Invalid code',
+    'redeem.networkError': 'Network error',
+    'redeem.noHistory': 'No redeem history yet',
     
     // Admin
     'admin.title': 'Admin Dashboard',
@@ -997,6 +1026,7 @@ export const translations = {
     'admin.requests': 'requests',
     'admin.topupUser': 'Top Up',
     'admin.resetBalance': 'Reset Balance',
+    'admin.router': 'Router Config',
 
     // Pricing Management
     'pricing.title': 'Pricing Management',

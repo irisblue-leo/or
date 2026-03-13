@@ -5,6 +5,7 @@ import {
   OpenClawLogo, DollarIcon, CheckIcon, XIcon, ClockIcon,
   LogOutIcon, KeyIcon,
 } from "@/components/icons";
+import { useTranslation } from "@/hooks/useTranslation";
 
 function getToken() { return typeof window !== "undefined" ? localStorage.getItem("token") : null; }
 function authHeaders() { return { Authorization: `Bearer ${getToken()}`, "Content-Type": "application/json" }; }
@@ -13,6 +14,7 @@ interface UserInfo { id: string; email: string; name: string | null; balance: nu
 interface RedeemHistory { id: string; code: string; amount: number; redeemedAt: string }
 
 export default function RedeemPage() {
+  const { t } = useTranslation();
   const [user, setUser] = useState<UserInfo | null>(null);
   const [code, setCode] = useState("");
   const [verifying, setVerifying] = useState(false);
@@ -56,7 +58,7 @@ export default function RedeemPage() {
       const data = await res.json();
       setVerifyResult(data);
     } catch {
-      setVerifyResult({ valid: false, message: "Network error" });
+      setVerifyResult({ valid: false, message: t('redeem.networkError') });
     }
     setVerifying(false);
   }
@@ -79,7 +81,7 @@ export default function RedeemPage() {
         fetchData();
       }
     } catch {
-      setRedeemResult({ success: false, message: "Network error" });
+      setRedeemResult({ success: false, message: t('redeem.networkError') });
     }
     setRedeeming(false);
   }
@@ -89,7 +91,7 @@ export default function RedeemPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-400">Loading...</div>
+        <div className="text-gray-400">{t('crypto.loading')}</div>
       </div>
     );
   }
@@ -101,7 +103,7 @@ export default function RedeemPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <OpenClawLogo size={28} />
-            <span className="text-lg font-semibold tracking-tight">Redeem</span>
+            <span className="text-lg font-semibold tracking-tight">{t('redeem.title')}</span>
           </a>
           <div className="flex items-center gap-4 text-sm">
             <a href="/dashboard" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"><KeyIcon size={18} /></a>
@@ -118,22 +120,22 @@ export default function RedeemPage() {
             <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-600">
               <DollarIcon size={20} />
             </div>
-            <span className="text-sm text-[var(--text-secondary)]">Current Balance</span>
+            <span className="text-sm text-[var(--text-secondary)]">{t('redeem.currentBalance')}</span>
           </div>
           <div className="text-3xl font-bold">${(user?.balance ?? 0).toFixed(2)}</div>
         </div>
 
         {/* Redeem Form */}
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6 mb-8">
-          <h2 className="text-lg font-semibold mb-4">Redeem Code</h2>
+          <h2 className="text-lg font-semibold mb-4">{t('redeem.code')}</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm text-[var(--text-secondary)] mb-2">Enter your redeem code</label>
+              <label className="block text-sm text-[var(--text-secondary)] mb-2">{t('redeem.enterCode')}</label>
               <input
                 type="text"
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase())}
-                placeholder="OCR-XXXX-XXXX-XXXX"
+                placeholder={t('redeem.placeholder')}
                 className="w-full px-4 py-3 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-indigo-500 font-mono"
               />
             </div>
@@ -145,12 +147,12 @@ export default function RedeemPage() {
                   {verifyResult.valid ? (
                     <>
                       <div className="text-green-500"><CheckIcon size={18} /></div>
-                      <span className="text-sm text-green-500">Valid code: ${verifyResult.amount?.toFixed(2)}</span>
+                      <span className="text-sm text-green-500">{t('redeem.validCode')}: ${verifyResult.amount?.toFixed(2)}</span>
                     </>
                   ) : (
                     <>
                       <div className="text-red-500"><XIcon size={18} /></div>
-                      <span className="text-sm text-red-500">{verifyResult.message || "Invalid code"}</span>
+                      <span className="text-sm text-red-500">{verifyResult.message || t('redeem.invalidCode')}</span>
                     </>
                   )}
                 </div>
@@ -182,14 +184,14 @@ export default function RedeemPage() {
                 disabled={!code.trim() || verifying}
                 className="flex-1 px-4 py-2.5 rounded-lg border border-[var(--border)] text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {verifying ? "Verifying..." : "Verify"}
+                {verifying ? t('redeem.verifying') : t('redeem.verify')}
               </button>
               <button
                 onClick={handleRedeem}
                 disabled={!code.trim() || redeeming || (verifyResult !== null && !verifyResult.valid)}
                 className="flex-1 px-4 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {redeeming ? "Redeeming..." : "Redeem"}
+                {redeeming ? t('redeem.redeeming') : t('redeem.button')}
               </button>
             </div>
           </div>
@@ -197,9 +199,9 @@ export default function RedeemPage() {
 
         {/* History */}
         <div className="rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-6">
-          <h2 className="text-lg font-semibold mb-4">Redeem History</h2>
+          <h2 className="text-lg font-semibold mb-4">{t('redeem.history')}</h2>
           {history.length === 0 ? (
-            <p className="text-sm text-[var(--text-muted)]">No redeem history yet.</p>
+            <p className="text-sm text-[var(--text-muted)]">{t('redeem.noHistory')}</p>
           ) : (
             <div className="space-y-3">
               {history.map((item) => (

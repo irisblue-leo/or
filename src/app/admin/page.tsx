@@ -38,10 +38,10 @@ export default function AdminPage() {
     { key: "overview", label: t('admin.overview'), icon: <ChartIcon size={16} /> },
     { key: "users", label: t('admin.users'), icon: <UsersIcon size={16} /> },
     { key: "models", label: t('admin.models'), icon: <ServerIcon size={16} /> },
-    { key: "providers", label: "接口管理", icon: <ZapIcon size={16} /> },
+    { key: "providers", label: t('admin.providers'), icon: <ZapIcon size={16} /> },
     { key: "pricing", label: t('admin.pricing'), icon: <DollarIcon size={16} /> },
     { key: "crypto", label: t('admin.crypto'), icon: <CryptoIcon size={16} /> },
-    { key: "router", label: "路由配置", icon: <SettingsIcon size={16} /> },
+    { key: "router", label: t('admin.router'), icon: <SettingsIcon size={16} /> },
   ];
   const [stats, setStats] = useState<StatsData | null>(null);
   const [users, setUsers] = useState<UserData[]>([]);
