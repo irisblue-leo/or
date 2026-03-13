@@ -7,6 +7,7 @@ import {
 } from "@/components/icons";
 import { useTranslation } from "@/hooks/useTranslation";
 import Pagination from "@/components/Pagination";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 function getToken() { return typeof window !== "undefined" ? localStorage.getItem("token") : null; }
 function authHeaders() { return { Authorization: `Bearer ${getToken()}`, "Content-Type": "application/json" }; }
@@ -16,7 +17,7 @@ interface UserData { id: string; email: string; name: string | null; role: strin
 interface ModelData { id: string; name: string; provider: string; upstreamProvider?: string; upstreamModelId?: string | null; providerId?: string | null; inputPrice: number; outputPrice: number; upstreamInput: number; upstreamOutput: number; priceMultiplier: number; active: boolean }
 interface ProviderData { id: string; name: string; slug: string; apiUrl: string; apiKey: string; priceMultiplier: number; active: boolean; priority: number; notes: string | null; _count?: { models: number } }
 
-type Tab = "overview" | "users" | "models" | "providers" | "pricing" | "crypto" | "router";
+type Tab = "overview" | "users" | "models" | "providers" | "pricing" | "crypto" | "router" | "redeemCodes";
 
 function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: string; color: string }) {
   return (
@@ -42,6 +43,7 @@ export default function AdminPage() {
     { key: "pricing", label: t('admin.pricing'), icon: <DollarIcon size={16} /> },
     { key: "crypto", label: t('admin.crypto'), icon: <CryptoIcon size={16} /> },
     { key: "router", label: t('admin.router'), icon: <SettingsIcon size={16} /> },
+    { key: "redeemCodes", label: t('admin.redeemCodes'), icon: <TicketIcon size={16} /> },
   ];
   const [stats, setStats] = useState<StatsData | null>(null);
   const [users, setUsers] = useState<UserData[]>([]);
@@ -187,6 +189,7 @@ export default function AdminPage() {
             <span className="px-2 py-0.5 rounded text-xs bg-indigo-100 text-indigo-700 border border-indigo-200">admin</span>
           </div>
           <div className="flex items-center gap-4 text-sm">
+            <LanguageSwitcher />
             <a href="/" className="text-gray-600 hover:text-gray-900 transition-colors"><HomeIcon size={18} /></a>
             <button onClick={logout} className="text-gray-600 hover:text-gray-900 transition-colors"><LogOutIcon size={18} /></button>
           </div>
@@ -586,6 +589,17 @@ export default function AdminPage() {
               className="w-full border-0 rounded-xl overflow-hidden"
               style={{ height: 'calc(100vh - 180px)' }}
               title="智能路由配置"
+            />
+          </div>
+        )}
+
+        {tab === "redeemCodes" && (
+          <div className="space-y-6">
+            <iframe
+              src="/admin/redeem-codes"
+              className="w-full border-0 rounded-xl overflow-hidden"
+              style={{ height: 'calc(100vh - 180px)' }}
+              title={t('admin.redeemCodes')}
             />
           </div>
         )}
