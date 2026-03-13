@@ -441,37 +441,12 @@ export default function AdminPage() {
 
         {tab === "pricing" && (
           <div className="space-y-6">
-            <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
-              <h2 className="text-lg font-semibold mb-4">{t('admin.pricing')}</h2>
-              <p className="text-sm text-gray-600 mb-6">{t('admin.margin')}</p>
-              <div className="space-y-4">
-                {models.map((m) => (
-                  <div key={m.id} className="flex items-center gap-4 p-4 rounded-lg border border-gray-200 bg-white/50">
-                    <div className="flex-1">
-                      <div className="font-medium text-sm">{m.name}</div>
-                      <div className="text-xs text-gray-700">{m.provider}</div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="text-center">
-                        <div className="text-xs text-gray-700 mb-1">{t('admin.inputPrice')}</div>
-                        <div className="px-3 py-1.5 rounded-md bg-gray-100 border border-gray-200 text-sm text-indigo-600 font-mono">${m.inputPrice.toFixed(2)}</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-xs text-gray-700 mb-1">{t('admin.outputPrice')}</div>
-                        <div className="px-3 py-1.5 rounded-md bg-gray-100 border border-gray-200 text-sm text-indigo-600 font-mono">${m.outputPrice.toFixed(2)}</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-xs text-gray-700 mb-1">{t('admin.margin')}</div>
-                        <div className="px-3 py-1.5 rounded-md bg-green-500/10 border border-green-500/20 text-sm text-green-400 font-mono">
-                          {(m.upstreamInput + m.upstreamOutput) > 0 ? ((1 - (m.upstreamInput + m.upstreamOutput) / (m.inputPrice + m.outputPrice)) * 100).toFixed(0) : 0}%
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {models.length === 0 && <p className="text-sm text-gray-700">{t('admin.noModels')}</p>}
-              </div>
-            </div>
+            <iframe
+              src="/admin/pricing"
+              className="w-full border-0 rounded-xl overflow-hidden"
+              style={{ height: 'calc(100vh - 180px)' }}
+              title={t('admin.pricing')}
+            />
           </div>
         )}
 
