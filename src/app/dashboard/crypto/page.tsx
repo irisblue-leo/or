@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from '@/hooks/useTranslation'
-import { OpenClawLogo, DollarIcon, HomeIcon, KeyIcon, LogOutIcon, ClockIcon } from '@/components/icons'
+import { OpenClawLogo, DollarIcon, KeyIcon, LogOutIcon, ClockIcon } from '@/components/icons'
 
 type Chain = 'ethereum' | 'bsc' | 'tron' | 'polygon' | 'solana'
 
@@ -124,14 +124,11 @@ export default function CryptoDepositPage() {
       {/* Nav */}
       <nav className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--bg-nav)] backdrop-blur-xl">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <OpenClawLogo size={28} />
             <span className="text-lg font-semibold tracking-tight">{t('crypto.title')}</span>
-          </div>
+          </a>
           <div className="flex items-center gap-4 text-sm">
-            <a href="/" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-              <HomeIcon size={18} />
-            </a>
             <a href="/dashboard" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
               <KeyIcon size={18} />
             </a>
