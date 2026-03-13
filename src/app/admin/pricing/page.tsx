@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { OpenClawLogo, SettingsIcon, LogOutIcon } from "@/components/icons";
 import { useTranslation } from "@/hooks/useTranslation";
 
 interface Model {
@@ -130,11 +129,6 @@ export default function PricingPage() {
     }
   }
 
-  function logout() {
-    localStorage.removeItem("token");
-    window.location.href = "/";
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -144,26 +138,7 @@ export default function PricingPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Nav */}
-      <nav className="sticky top-0 z-50 border-b border-[var(--border-light)] bg-[var(--bg-nav)] backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <OpenClawLogo size={28} />
-            <span className="text-lg font-semibold tracking-tight">Admin</span>
-            <span className="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 text-xs font-medium">admin</span>
-          </a>
-          <div className="flex items-center gap-4 text-sm">
-            <a href="/admin" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-              <SettingsIcon size={18} />
-            </a>
-            <button onClick={logout} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-              <LogOutIcon size={18} />
-            </button>
-          </div>
-        </div>
-      </nav>
-
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-6 py-8">
         <h1 className="text-3xl font-bold mb-8">{t('pricing.title')}</h1>
 
