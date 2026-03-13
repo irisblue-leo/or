@@ -1,8 +1,23 @@
--- OpenClaw Relay 数据库初始化脚本
+#!/bin/bash
 
+# 初始化数据库数据
+# 包括：管理员账号、模型、上游接口
+
+echo "初始化数据库..."
+echo ""
+
+# 检查是否设置了 DATABASE_URL
+if [ -z "$DATABASE_URL" ]; then
+    echo "错误: DATABASE_URL 环境变量未设置"
+    echo "请先设置: export DATABASE_URL='postgresql://user:password@host:port/database'"
+    exit 1
+fi
+
+# 执行初始化
+psql "$DATABASE_URL" << 'EOF'
+-- ============================================
 -- 1. 创建管理员账号
--- 邮箱：admin@openclaw-relay.com
--- 密码：!AgentOPC2026
+-- ============================================
 INSERT INTO "User" (id, email, password, name, role, balance, "emailVerified", "createdAt", "updatedAt")
 VALUES (
   'admin-' || gen_random_uuid()::text,
@@ -19,7 +34,9 @@ ON CONFLICT (email) DO UPDATE SET
   password = EXCLUDED.password,
   "updatedAt" = NOW();
 
+-- ============================================
 -- 2. 添加上游接口配置
+-- ============================================
 INSERT INTO "Provider" (id, name, "baseUrl", "apiKey", active, "createdAt", "updatedAt")
 VALUES
   (gen_random_uuid()::text, 'OpenAI', 'https://api.openai.com/v1', '', true, NOW(), NOW()),
@@ -27,7 +44,9 @@ VALUES
   (gen_random_uuid()::text, 'OpenRouter', 'https://openrouter.ai/api/v1', '', true, NOW(), NOW())
 ON CONFLICT (name) DO NOTHING;
 
+-- ============================================
 -- 3. 添加常用模型（定价参考市场标准，单位：$/1M tokens）
+-- ============================================
 INSERT INTO "Model" (id, name, provider, "inputPrice", "outputPrice", "upstreamInput", "upstreamOutput", active, "createdAt", "updatedAt")
 VALUES
   -- Claude 4 系列（最新）
@@ -54,15 +73,26 @@ VALUES
   (gen_random_uuid()::text, 'deepseek-coder', 'openai', 0.14, 0.28, 0.11, 0.22, true, NOW(), NOW())
 ON CONFLICT (name) DO NOTHING;
 
--- 3. 生成测试充值码（可选）
--- INSERT INTO "RedeemCode" (id, code, amount, status, "createdById", "createdAt")
--- SELECT 
---   gen_random_uuid()::text,
---   'OCR-TEST-' || LPAD(generate_series::text, 4, '0'),
---   100.00,
---   'unused',
---   (SELECT id FROM "User" WHERE role = 'admin' LIMIT 1),
---   NOW()
--- FROM generate_series(1, 10);
+-- ============================================
+-- 4. 统计结果
+-- ============================================
+SELECT '✓ 数据库初始化完成' as status;
+SELECT COUNT(*) as admin_count FROM "User" WHERE role = 'admin';
+SELECT COUNT(*) as provider_count FROM "Provider";
+SELECT COUNT(*) as model_count FROM "Model";
+EOF
 
-SELECT 'Database initialized successfully' as result;
+if [ $? -eq 0 ]; then
+    echo ""
+    echo "✓ 数据库初始化成功！"
+    echo ""
+    echo "管理员账号:"
+    echo "  邮箱: admin@openclaw-relay.com"
+    echo "  密码: !AgentOPC2026"
+    echo ""
+    echo "请访问 https://relay.agentopc.xyz/admin 查看管理后台"
+else
+    echo ""
+    echo "✗ 初始化失败，请检查数据库连接"
+    exit 1
+fi
