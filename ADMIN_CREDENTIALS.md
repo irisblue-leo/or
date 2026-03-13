@@ -1,11 +1,14 @@
 # 管理员账号信息
 
-## 默认管理员账号
-
-**重要：首次部署后请立即修改密码！**
+## 生产环境管理员账号
 
 - **邮箱**: `admin@openclaw-relay.com`
-- **密码**: `admin123`
+- **密码**: `!AgentOPC2026`
+
+## 开发环境默认账号
+
+- **邮箱**: `admin@openclaw-relay.com`
+- **密码**: `admin123` (仅用于本地开发)
 
 ## 初始化数据库
 
@@ -32,6 +35,21 @@ docker exec -i postgres_container psql -U user -d openclaw_relay < prisma/seed.s
 3. 登录后会自动跳转到管理后台 `/admin`
 
 ## 修改管理员密码
+
+### 使用提供的脚本（推荐）
+
+在服务器上执行：
+
+```bash
+# 1. 进入项目目录
+cd /root/openclaw-relay
+
+# 2. 设置数据库连接（如果未设置）
+export DATABASE_URL="postgresql://user:password@localhost:5432/openclaw_relay"
+
+# 3. 执行更新脚本
+./scripts/update-admin-password.sh
+```
 
 ### 方法 1：通过数据库直接修改
 
