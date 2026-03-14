@@ -88,8 +88,22 @@ export async function POST(req: NextRequest) {
 
   const stream = body.stream === true;
 
-  // 2.5. Smart Router: 智能路由选择模型
+  // 2.5. 用户聚合器和智能模型选择
   let finalModelName = modelName;
+  
+  // 如果用户启用了智能模型选择，且请求的是 "auto"
+  if (user.enableSmartModel && modelName === "auto") {
+    const { recommendModel } = await import("@/lib/smart-model");
+    const messages = body.messages as Array<{ role: string; content: string }>;
+    const recommendation = recommendModel(messages, user.preferredAggregator as "default" | "openrouter");
+    finalModelName = recommendation.modelName;
+    console.log(`[Smart Model] Recommended: ${finalModelName}, reason: ${recommendation.reason}`);
+  } else {
+    finalModelName = modelName;
+  }
+
+  // 2.6. Smart Router: 智能路由选择模型（管理员配置的路由规则）
+  // finalModelName 已在上面定义
   
   // 获取路由模式
   const routerModeConfig = await prisma.systemConfig.findUnique({
@@ -146,6 +160,22 @@ export async function POST(req: NextRequest) {
     include: { upstreamProviderRef: true },
   });
   if (!model || !model.active) return err(`Model "${finalModelName}" not available`, 404);
+
+  // 3.5. 检查用户聚合器权限
+  const userAggregator = user.preferredAggregator || "default";
+  const modelProvider = model.upstreamProvider || model.provider;
+  
+  // 默认聚合器只能使用 GPT-4o 和 Claude 3.5 Sonnet
+  if (userAggregator === "default") {
+    const allowedModels = ["gpt-4o", "GPT-4o", "claude-3.5-sonnet", "Claude 3.5 Sonnet"];
+    if (!allowedModels.includes(finalModelName)) {
+      return err(
+        `Model "${finalModelName}" is not available in default aggregator. Please switch to OpenRouter aggregator in settings.`,
+        403
+      );
+    }
+  }
+  // OpenRouter 聚合器可以使用所有模型（无限制）
 
   // 4. Check balance (estimate: pre-check with minimum)
   if (user.balance <= 0) return err("Insufficient balance", 402);

@@ -5,11 +5,13 @@ import { prisma } from "@/lib/prisma";
  * GET /api/relay/v1/models
  * OpenAI-compatible models list endpoint
  * Returns list of available models in OpenAI format
+ * Filters models based on user's aggregator preference
  */
 export async function GET(req: NextRequest) {
-  // Optional: authenticate by API key
+  // Authenticate by API key
   const auth = req.headers.get("authorization");
-  let authenticated = false;
+  let user = null;
+  let userAggregator = "default";
   
   if (auth?.startsWith("Bearer ")) {
     const key = auth.slice(7);
@@ -17,16 +19,27 @@ export async function GET(req: NextRequest) {
       where: { key },
       include: { user: true },
     });
-    authenticated = !!apiKey && apiKey.active;
+    if (apiKey && apiKey.active) {
+      user = apiKey.user;
+      userAggregator = user.preferredAggregator || "default";
+    }
   }
 
   // Fetch active models
-  const models = await prisma.model.findMany({
+  let models = await prisma.model.findMany({
     where: { active: true },
     orderBy: { name: "asc" },
   });
 
-  // Transform to OpenAI format
+  // Filter models based on user's aggregator
+  if (userAggregator === "default") {
+    // 默认聚合器：只返回 GPT-4o 和 Claude 3.5 Sonnet
+    const allowedModels = ["gpt-4o", "GPT-4o", "claude-3.5-sonnet", "Claude 3.5 Sonnet"];
+    models = models.filter((m) => allowedModels.includes(m.name));
+  }
+  // OpenRouter 聚合器：返回所有模型
+
+  // Add "auto" model if user has smart model enabled
   const data = models.map((m) => ({
     id: m.name,
     object: "model",
@@ -36,6 +49,19 @@ export async function GET(req: NextRequest) {
     root: m.name,
     parent: null,
   }));
+
+  // Add "auto" model if user has smart model enabled
+  if (user?.enableSmartModel) {
+    data.unshift({
+      id: "auto",
+      object: "model",
+      created: Math.floor(new Date().getTime() / 1000),
+      owned_by: "openclaw-relay",
+      permission: [],
+      root: "auto",
+      parent: null,
+    });
+  }
 
   return new Response(
     JSON.stringify({
