@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { OpenClawLogo, SettingsIcon, HomeIcon, LogOutIcon, CheckIcon, GlobeIcon } from "@/components/icons";
+import { OpenClawLogo, SettingsIcon, HomeIcon, LogOutIcon, CheckIcon } from "@/components/icons";
 import { useLanguageStore } from "@/store/languageStore";
 import { translations } from "@/lib/translations";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 function getToken() {
   return typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -107,49 +108,7 @@ export default function SettingsPage() {
 
           <div className="flex items-center gap-4 text-sm">
             {/* 语言切换 */}
-            <div className="relative group">
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors">
-                <GlobeIcon size={20} />
-              </button>
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all py-2">
-                <button
-                  onClick={() => setLanguage("zh-CN")}
-                  className="w-full px-6 py-3 text-left hover:bg-gray-50 flex items-center justify-between group/item"
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="text-base text-gray-500 font-medium">简</span>
-                    <span className="text-base text-gray-700">简体中文</span>
-                  </div>
-                  {language === "zh-CN" && (
-                    <CheckIcon size={20} className="text-blue-600" />
-                  )}
-                </button>
-                <button
-                  onClick={() => setLanguage("zh-TW")}
-                  className="w-full px-6 py-3 text-left hover:bg-gray-50 flex items-center justify-between group/item"
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="text-base text-gray-500 font-medium">繁</span>
-                    <span className="text-base text-gray-700">繁體中文</span>
-                  </div>
-                  {language === "zh-TW" && (
-                    <CheckIcon size={20} className="text-blue-600" />
-                  )}
-                </button>
-                <button
-                  onClick={() => setLanguage("en")}
-                  className="w-full px-6 py-3 text-left hover:bg-gray-50 flex items-center justify-between group/item"
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="text-base text-gray-500 font-medium">EN</span>
-                    <span className="text-base text-gray-700">English</span>
-                  </div>
-                  {language === "en" && (
-                    <CheckIcon size={20} className="text-blue-600" />
-                  )}
-                </button>
-              </div>
-            </div>
+            <LanguageSwitcher />
 
             <a href="/" className="text-gray-600 hover:text-gray-900 transition-colors">
               <HomeIcon size={18} />
