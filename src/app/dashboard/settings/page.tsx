@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { OpenClawLogo, SettingsIcon, HomeIcon, LogOutIcon, CheckIcon } from "@/components/icons";
+import { OpenClawLogo, SettingsIcon, HomeIcon, LogOutIcon, CheckIcon, GlobeIcon } from "@/components/icons";
+import { useLanguageStore } from "@/store/languageStore";
+import { translations } from "@/lib/translations";
 
 function getToken() {
   return typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -17,6 +19,8 @@ function authHeaders() {
 
 export default function SettingsPage() {
   const router = useRouter();
+  const { language, setLanguage } = useLanguageStore();
+  const t = (key: string) => (translations[language] as any)[key] || key;
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [preferredAggregator, setPreferredAggregator] = useState<"default" | "openrouter" | "302ai">("default");
@@ -64,13 +68,13 @@ export default function SettingsPage() {
       });
 
       if (res.ok) {
-        setMessage("设置已保存");
+        setMessage(t("settings.saved"));
         setTimeout(() => setMessage(""), 3000);
       } else {
-        setMessage("保存失败");
+        setMessage(t("settings.saveFailed"));
       }
     } catch {
-      setMessage("保存失败");
+      setMessage(t("settings.saveFailed"));
     }
 
     setSaving(false);
@@ -83,29 +87,62 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-400">加载中...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-gray-600">{t("common.loading")}</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-gray-50">
       {/* Nav */}
-      <nav className="sticky top-0 z-50 border-b border-gray-800/50 bg-gray-950/80 backdrop-blur-xl">
+      <nav className="sticky top-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur-xl">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <OpenClawLogo size={28} />
-            <span className="text-lg font-semibold tracking-tight">设置</span>
+            <span className="text-lg font-semibold tracking-tight text-gray-900">
+              {t("settings.title")}
+            </span>
           </div>
+
           <div className="flex items-center gap-4 text-sm">
-            <a href="/" className="text-gray-400 hover:text-white transition-colors">
+            {/* 语言切换 */}
+            <div className="relative group">
+              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors">
+                <GlobeIcon size={18} />
+                <span className="text-sm font-medium">
+                  {language === "zh-CN" ? "简中" : language === "zh-TW" ? "繁中" : "EN"}
+                </span>
+              </button>
+              <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                <button
+                  onClick={() => setLanguage("zh-CN")}
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 first:rounded-t-lg"
+                >
+                  简体中文
+                </button>
+                <button
+                  onClick={() => setLanguage("zh-TW")}
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  繁體中文
+                </button>
+                <button
+                  onClick={() => setLanguage("en")}
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 last:rounded-b-lg"
+                >
+                  English
+                </button>
+              </div>
+            </div>
+
+            <a href="/" className="text-gray-600 hover:text-gray-900 transition-colors">
               <HomeIcon size={18} />
             </a>
-            <a href="/dashboard" className="text-gray-400 hover:text-white transition-colors">
-              Dashboard
+            <a href="/dashboard" className="text-gray-600 hover:text-gray-900 transition-colors">
+              {t("nav.dashboard")}
             </a>
-            <button onClick={logout} className="text-gray-400 hover:text-white transition-colors">
+            <button onClick={logout} className="text-gray-600 hover:text-gray-900 transition-colors">
               <LogOutIcon size={18} />
             </button>
           </div>
@@ -115,14 +152,13 @@ export default function SettingsPage() {
       <div className="max-w-3xl mx-auto px-6 py-12">
         <div className="space-y-8">
           {/* 聚合器选择 */}
-          <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-6">
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <SettingsIcon size={20} />
-              <h2 className="text-lg font-semibold">聚合器选择</h2>
+              <SettingsIcon size={20} className="text-gray-700" />
+              <h2 className="text-lg font-semibold text-gray-900">{t("settings.aggregator.title")}</h2>
             </div>
-            <p className="text-sm text-gray-400 mb-6">
-              选择您要使用的模型聚合器。默认聚合器提供 GPT-4o 和 Claude 3.5 Sonnet 两个精选模型，
-              OpenRouter 聚合器提供 50+ 个模型，302.ai 聚合器提供国内优化的 AI 模型服务。
+            <p className="text-sm text-gray-600 mb-6">
+              {t("settings.aggregator.description")}
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -131,21 +167,21 @@ export default function SettingsPage() {
                 onClick={() => setPreferredAggregator("default")}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   preferredAggregator === "default"
-                    ? "border-indigo-500 bg-indigo-500/10"
-                    : "border-gray-800 hover:border-gray-700"
+                    ? "border-indigo-500 bg-indigo-50"
+                    : "border-gray-200 hover:border-gray-300 bg-white"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold">默认聚合器</h3>
+                  <h3 className="font-semibold text-gray-900">{t("settings.aggregator.default.title")}</h3>
                   {preferredAggregator === "default" && (
-                    <CheckIcon size={20} className="text-indigo-400" />
+                    <CheckIcon size={20} className="text-indigo-600" />
                   )}
                 </div>
-                <p className="text-sm text-gray-400 text-left">
-                  精选 2 个模型：GPT-4o、Claude 3.5 Sonnet
+                <p className="text-sm text-gray-600 text-left">
+                  {t("settings.aggregator.default.description")}
                 </p>
                 <div className="mt-3 text-xs text-gray-500">
-                  适合大多数场景，简单易用
+                  {t("settings.aggregator.default.note")}
                 </div>
               </button>
 
@@ -154,21 +190,21 @@ export default function SettingsPage() {
                 onClick={() => setPreferredAggregator("openrouter")}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   preferredAggregator === "openrouter"
-                    ? "border-indigo-500 bg-indigo-500/10"
-                    : "border-gray-800 hover:border-gray-700"
+                    ? "border-indigo-500 bg-indigo-50"
+                    : "border-gray-200 hover:border-gray-300 bg-white"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold">OpenRouter 聚合器</h3>
+                  <h3 className="font-semibold text-gray-900">{t("settings.aggregator.openrouter.title")}</h3>
                   {preferredAggregator === "openrouter" && (
-                    <CheckIcon size={20} className="text-indigo-400" />
+                    <CheckIcon size={20} className="text-indigo-600" />
                   )}
                 </div>
-                <p className="text-sm text-gray-400 text-left">
-                  50+ 个模型：OpenAI、Anthropic、Google、国产模型等
+                <p className="text-sm text-gray-600 text-left">
+                  {t("settings.aggregator.openrouter.description")}
                 </p>
                 <div className="mt-3 text-xs text-gray-500">
-                  适合需要更多模型选择的用户
+                  {t("settings.aggregator.openrouter.note")}
                 </div>
               </button>
 
@@ -177,40 +213,41 @@ export default function SettingsPage() {
                 onClick={() => setPreferredAggregator("302ai")}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   preferredAggregator === "302ai"
-                    ? "border-indigo-500 bg-indigo-500/10"
-                    : "border-gray-800 hover:border-gray-700"
+                    ? "border-indigo-500 bg-indigo-50"
+                    : "border-gray-200 hover:border-gray-300 bg-white"
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold">302.ai 聚合器</h3>
+                  <h3 className="font-semibold text-gray-900">{t("settings.aggregator.302ai.title")}</h3>
                   {preferredAggregator === "302ai" && (
-                    <CheckIcon size={20} className="text-indigo-400" />
+                    <CheckIcon size={20} className="text-indigo-600" />
                   )}
                 </div>
-                <p className="text-sm text-gray-400 text-left">
-                  5 个模型：GPT-4o、Claude、DeepSeek、Qwen、GLM-4
+                <p className="text-sm text-gray-600 text-left">
+                  {t("settings.aggregator.302ai.description")}
                 </p>
                 <div className="mt-3 text-xs text-gray-500">
-                  国内优化，响应快速
+                  {t("settings.aggregator.302ai.note")}
                 </div>
               </button>
             </div>
           </div>
 
           {/* 智能模型选择 */}
-          <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-6">
+          <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-lg font-semibold mb-1">智能模型选择</h2>
-                <p className="text-sm text-gray-400">
-                  启用后，可以使用 <code className="px-2 py-0.5 rounded bg-gray-800 text-indigo-300">model: "auto"</code> 参数，
-                  系统会根据您的输入自动选择最合适的模型。
+                <h2 className="text-lg font-semibold text-gray-900 mb-1">
+                  {t("settings.smartModel.title")}
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {t("settings.smartModel.description")}
                 </p>
               </div>
               <button
                 onClick={() => setEnableSmartModel(!enableSmartModel)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  enableSmartModel ? "bg-indigo-600" : "bg-gray-700"
+                  enableSmartModel ? "bg-indigo-600" : "bg-gray-300"
                 }`}
               >
                 <span
@@ -222,14 +259,15 @@ export default function SettingsPage() {
             </div>
 
             {enableSmartModel && (
-              <div className="mt-4 p-4 rounded-lg bg-gray-950 border border-gray-800">
-                <h3 className="text-sm font-semibold mb-2">智能选择规则</h3>
-                <ul className="text-sm text-gray-400 space-y-1">
-                  <li>• 代码相关 → Claude 3.5 Sonnet</li>
-                  <li>• 数学推理 → GPT-4o</li>
-                  <li>• 创意写作 → Claude 3.5 Sonnet</li>
-                  <li>• 长文本理解 → Gemini 1.5 Pro（仅 OpenRouter）</li>
-                  <li>• 简单对话 → GPT-4o-mini（仅 OpenRouter）</li>
+              <div className="mt-4 p-4 rounded-lg bg-indigo-50 border border-indigo-100">
+                <h3 className="text-sm font-semibold text-indigo-900 mb-2">
+                  {t("settings.smartModel.howItWorks")}
+                </h3>
+                <ul className="text-sm text-indigo-800 space-y-1">
+                  <li>• {t("settings.smartModel.rule1")}</li>
+                  <li>• {t("settings.smartModel.rule2")}</li>
+                  <li>• {t("settings.smartModel.rule3")}</li>
+                  <li>• {t("settings.smartModel.rule4")}</li>
                 </ul>
               </div>
             )}
@@ -237,13 +275,9 @@ export default function SettingsPage() {
 
           {/* 保存按钮 */}
           <div className="flex items-center justify-between">
-            <div>
+            <div className="text-sm">
               {message && (
-                <span
-                  className={`text-sm ${
-                    message.includes("成功") ? "text-green-400" : "text-red-400"
-                  }`}
-                >
+                <span className={message.includes("成功") || message.includes("成功") || message.includes("success") ? "text-green-600" : "text-red-600"}>
                   {message}
                 </span>
               )}
@@ -251,9 +285,9 @@ export default function SettingsPage() {
             <button
               onClick={saveSettings}
               disabled={saving}
-              className="px-6 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors disabled:opacity-50"
+              className="px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {saving ? "保存中..." : "保存设置"}
+              {saving ? t("settings.saving") : t("settings.save")}
             </button>
           </div>
         </div>
