@@ -29,8 +29,8 @@ export async function PATCH(req: NextRequest) {
   const { preferredAggregator, enableSmartModel } = body;
 
   // Validate
-  if (preferredAggregator && !["default", "openrouter"].includes(preferredAggregator)) {
-    return err("Invalid aggregator. Must be 'default' or 'openrouter'");
+  if (preferredAggregator && !["default", "openrouter", "302ai"].includes(preferredAggregator)) {
+    return err("Invalid aggregator. Must be 'default', 'openrouter', or '302ai'");
   }
 
   // Update

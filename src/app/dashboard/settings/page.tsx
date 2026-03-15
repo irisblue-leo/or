@@ -19,7 +19,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [preferredAggregator, setPreferredAggregator] = useState<"default" | "openrouter">("default");
+  const [preferredAggregator, setPreferredAggregator] = useState<"default" | "openrouter" | "302ai">("default");
   const [enableSmartModel, setEnableSmartModel] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -122,10 +122,10 @@ export default function SettingsPage() {
             </div>
             <p className="text-sm text-gray-400 mb-6">
               选择您要使用的模型聚合器。默认聚合器提供 GPT-4o 和 Claude 3.5 Sonnet 两个精选模型，
-              OpenRouter 聚合器提供 50+ 个模型供您选择。
+              OpenRouter 聚合器提供 50+ 个模型，302.ai 聚合器提供国内优化的 AI 模型服务。
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* 默认聚合器 */}
               <button
                 onClick={() => setPreferredAggregator("default")}
@@ -169,6 +169,29 @@ export default function SettingsPage() {
                 </p>
                 <div className="mt-3 text-xs text-gray-500">
                   适合需要更多模型选择的用户
+                </div>
+              </button>
+
+              {/* 302.ai 聚合器 */}
+              <button
+                onClick={() => setPreferredAggregator("302ai")}
+                className={`p-4 rounded-lg border-2 transition-all ${
+                  preferredAggregator === "302ai"
+                    ? "border-indigo-500 bg-indigo-500/10"
+                    : "border-gray-800 hover:border-gray-700"
+                }`}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-semibold">302.ai 聚合器</h3>
+                  {preferredAggregator === "302ai" && (
+                    <CheckIcon size={20} className="text-indigo-400" />
+                  )}
+                </div>
+                <p className="text-sm text-gray-400 text-left">
+                  5 个模型：GPT-4o、Claude、DeepSeek、Qwen、GLM-4
+                </p>
+                <div className="mt-3 text-xs text-gray-500">
+                  国内优化，响应快速
                 </div>
               </button>
             </div>

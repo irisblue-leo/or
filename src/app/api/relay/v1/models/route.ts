@@ -36,6 +36,9 @@ export async function GET(req: NextRequest) {
     // 默认聚合器：只返回 GPT-4o 和 Claude 3.5 Sonnet
     const allowedModels = ["gpt-4o", "GPT-4o", "claude-3.5-sonnet", "Claude 3.5 Sonnet"];
     models = models.filter((m) => allowedModels.includes(m.name));
+  } else if (userAggregator === "302ai") {
+    // 302.ai 聚合器：只返回 302.ai 的模型
+    models = models.filter((m) => m.upstreamProvider === "302ai");
   }
   // OpenRouter 聚合器：返回所有模型
 

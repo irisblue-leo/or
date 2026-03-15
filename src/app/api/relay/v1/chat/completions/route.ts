@@ -180,12 +180,25 @@ export async function POST(req: NextRequest) {
   // 4. Check balance (estimate: pre-check with minimum)
   if (user.balance <= 0) return err("Insufficient balance", 402);
 
-  // 5. Get upstream config — use env variables only
-  // Always use UPSTREAM_API_URL for most models, OPENROUTER_API_URL for OpenRouter
-  const upstreamProvider = model.upstreamProvider || model.provider;
-  const upstreamUrl = PROVIDER_URLS[upstreamProvider] || "";
-  const upstreamKey = PROVIDER_KEYS[upstreamProvider] || "";
-  const isOpenRouter = upstreamProvider === "openrouter";
+  // 5. Get upstream config — prioritize database UpstreamProvider, fallback to env
+  let upstreamUrl = "";
+  let upstreamKey = "";
+  let isOpenRouter = false;
+  let is302ai = false;
+  
+  // If model has upstreamProviderRef, use it
+  if (model.upstreamProviderRef) {
+    upstreamUrl = `${model.upstreamProviderRef.apiUrl}/chat/completions`;
+    upstreamKey = model.upstreamProviderRef.apiKey;
+    isOpenRouter = model.upstreamProviderRef.slug === "openrouter";
+    is302ai = model.upstreamProviderRef.slug === "302ai";
+  } else {
+    // Fallback to env variables
+    const upstreamProvider = model.upstreamProvider || model.provider;
+    upstreamUrl = PROVIDER_URLS[upstreamProvider] || "";
+    upstreamKey = PROVIDER_KEYS[upstreamProvider] || "";
+    isOpenRouter = upstreamProvider === "openrouter";
+  }
 
   if (!upstreamUrl || !upstreamKey) return err("Upstream provider not configured", 500);
 
@@ -210,7 +223,7 @@ export async function POST(req: NextRequest) {
     upstreamHeaders["X-Forwarded-For"] = "8.8.8.8";
   }
 
-  // 7. Forward to upstream (with proxy support for OpenRouter)
+  // 7. Forward to upstream (with proxy support for OpenRouter and 302.ai)
   let upstreamRes: Response;
   try {
     const fetchOptions: RequestInit & { dispatcher?: any } = {
@@ -219,8 +232,8 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(upstreamBody),
     };
     
-    // Use proxy for OpenRouter requests
-    if (isOpenRouter && proxyAgent) {
+    // Use proxy for OpenRouter and 302.ai requests
+    if ((isOpenRouter || is302ai) && proxyAgent) {
       fetchOptions.dispatcher = proxyAgent;
     }
     

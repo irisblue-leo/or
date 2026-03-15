@@ -64,14 +64,14 @@ export default function Home() {
             <a href="/learn" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">{t('nav.learn')}</a>
             <a href="/docs" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">{t('nav.docs')}</a>
             <LanguageSwitcher />
-            <button onClick={() => openAuth("register")} className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors">
+            <button onClick={() => openAuth("login")} className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors">
               {t('nav.getStarted')}
             </button>
           </div>
           {/* Mobile nav */}
           <div className="flex md:hidden items-center gap-3 text-sm">
             <LanguageSwitcher />
-            <button onClick={() => openAuth("register")} className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs">
+            <button onClick={() => openAuth("login")} className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs">
               {t('nav.getStarted')}
             </button>
           </div>
@@ -158,7 +158,7 @@ export default function Home() {
           </div>
           
           <div className="flex items-center justify-center gap-3 sm:gap-4 flex-wrap">
-            <button onClick={() => openAuth("register")} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all hover:shadow-lg hover:shadow-indigo-500/25">
+            <button onClick={() => openAuth("login")} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all hover:shadow-lg hover:shadow-indigo-500/25">
               {t('home.cta.register')}
               <ArrowRightIcon size={16} />
             </button>
@@ -277,7 +277,7 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center justify-center gap-3 sm:gap-4 flex-wrap">
-            <button onClick={() => openAuth("register")} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all hover:shadow-lg hover:shadow-indigo-500/25">
+            <button onClick={() => openAuth("login")} className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all hover:shadow-lg hover:shadow-indigo-500/25">
               {t('home.cta.register')}
               <ArrowRightIcon size={16} />
             </button>

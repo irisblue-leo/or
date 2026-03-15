@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import {
   OpenClawLogo, KeyIcon, ChartIcon, DollarIcon, PlusIcon,
-  TrashIcon, CopyIcon, LogOutIcon, TicketIcon, CryptoIcon,
+  TrashIcon, CopyIcon, LogOutIcon, TicketIcon, CryptoIcon, SettingsIcon,
 } from "@/components/icons";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -118,6 +118,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-4 text-sm">
             <a href="/dashboard/crypto" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title={t('crypto.title')}><CryptoIcon size={18} /></a>
             <a href="/dashboard/redeem" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title={t('dashboard.redeemCode')}><TicketIcon size={18} /></a>
+            <a href="/dashboard/settings" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors" title="Settings"><SettingsIcon size={18} /></a>
             <span className="text-[var(--text-secondary)]">{user?.email}</span>
             <LanguageSwitcher />
             <button onClick={logout} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"><LogOutIcon size={18} /></button>
